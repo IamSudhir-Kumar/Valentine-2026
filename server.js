@@ -26,30 +26,131 @@ if (!fs.existsSync(cardDataDirPath)) {
 
 const presets = JSON.parse(fs.readFileSync(path.join(__dirname, 'presets.json'), 'utf8'));
 
-for (const presetName in presets) {
-    const presetCardDataFile = getCardDataFilePath(presetName);
-    if (!fs.existsSync(presetCardDataFile) || Object.keys(JSON.parse(fs.readFileSync(presetCardDataFile, 'utf8'))).length === 0) {
-        const defaultCardData = {};
-        const generatedIds = new Set();
-        while (Object.keys(defaultCardData).length < 27) {
-            const min = 1000;
-            const max = 9999;
-            let fourDigitId = String(Math.floor(Math.random() * (max - min + 1)) + min);
-            
-            if (!generatedIds.has(fourDigitId)) {
-                generatedIds.add(fourDigitId);
-                defaultCardData[fourDigitId] = {
-                    text: presets[presetName].defaultText,
-                    color: presets[presetName].defaultColor,
-                    size: presets[presetName].defaultSize,
-                    type: presetName, // Store the preset type
-                    imagePath: null // No default image
-                };
+    console.log('Server initialization started.');
+
+    for (const presetName in presets) {
+
+        console.log(`Processing preset: ${presetName}`);
+
+        const presetCardDataFile = getCardDataFilePath(presetName);
+
+        let shouldInitialize = false;
+
+        if (!fs.existsSync(presetCardDataFile)) {
+
+            console.log(`File does not exist for ${presetName}, initializing.`);
+
+            shouldInitialize = true;
+
+        } else {
+
+            let fileContent;
+
+            try {
+
+                fileContent = fs.readFileSync(presetCardDataFile, 'utf8');
+
+                if (Object.keys(JSON.parse(fileContent)).length === 0) {
+
+                    console.log(`File exists but is empty for ${presetName}, initializing.`);
+
+                    shouldInitialize = true;
+
+                } else {
+
+                    console.log(`File exists and is not empty for ${presetName}, skipping initialization.`);
+
+                }
+
+            } catch (error) {
+
+                console.error(`Error reading or parsing file for ${presetName}:`, error);
+
+                shouldInitialize = true; // Attempt to re-initialize if there's an error
+
             }
+
         }
-        fs.writeFileSync(presetCardDataFile, JSON.stringify(defaultCardData, null, 2));
+
+
+
+        if (shouldInitialize) {
+
+            const defaultCardData = {};
+
+            const generatedIds = new Set();
+
+            while (Object.keys(defaultCardData).length < 27) {
+
+                const min = 1000;
+
+                const max = 9999;
+
+                let fourDigitId = String(Math.floor(Math.random() * (max - min + 1)) + min);
+
+
+
+                if (!generatedIds.has(fourDigitId)) {
+
+                    generatedIds.add(fourDigitId);
+
+                    defaultCardData[fourDigitId] = {
+
+                        text: presets[presetName].defaultText,
+
+                        color: presets[presetName].defaultColor,
+
+                        size: presets[presetName].defaultSize,
+
+                        type: presetName, // Store the preset type
+
+                        imagePath: null // No default image
+
+                    };
+
+                }
+
+            }
+
+            if (presetName === 'valentine') {
+
+                defaultCardData['default_card'] = {
+
+                    text: presets[presetName].defaultText,
+
+                    color: presets[presetName].defaultColor,
+
+                    size: presets[presetName].defaultSize,
+
+                    type: presetName,
+
+                    imagePath: null
+
+                };
+
+            }
+
+            try {
+
+                fs.writeFileSync(presetCardDataFile, JSON.stringify(defaultCardData, null, 2));
+
+                console.log(`Successfully wrote file for ${presetName}: ${presetCardDataFile}`);
+
+            } catch (error) {
+
+                console.error(`Error writing file for ${presetName}:`, error);
+
+            }
+
+        }
+
     }
-}
+
+
+
+    console.log('Server initialization completed.');
+
+
 
 app.use(cors());
 app.use(express.json());

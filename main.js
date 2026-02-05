@@ -278,6 +278,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         textMaterial.color.set(colorPicker.value);
         const colorIndicator = document.getElementById('color-indicator');
         if (colorIndicator) colorIndicator.style.backgroundColor = colorPicker.value;
+        saveCardData(textInput.value, colorPicker.value, textSizeInput.value);
+        posthog.capture('Card Data Updated', {
+          cardId: cardId,
+          update_type: 'color_change',
+          text: textInput.value,
+          size: textSizeInput.value,
+          color: colorPicker.value
+        });
       });
 
       const imageUpload = document.getElementById("image-upload");

@@ -6,7 +6,11 @@
     "defaultColor": "#FF0090",
     "defaultSize": 0.2,
     "envMap": "./assets/hdr/cape_hill_1k.hdr",
-    "displayImage": "./assets/graphics/air-baloon-2.png"
+    "displayImage": "./assets/graphics/air-baloon-2.png",
+    "modelPosition": [0, -0.5, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
   },
   "CherryBlossomCat":{
     "model": "./assets/models/cherry.glb",
@@ -15,7 +19,11 @@
     "defaultColor": "#FF69B4",
     "defaultSize": 0.2,
     "envMap": "./assets/hdr/cape_hill_1k.hdr",
-    "displayImage": "./assets/graphics/Cherry-Blossoms.png"
+    "displayImage": "./assets/graphics/Cherry-Blossoms.png",
+    "modelPosition": [0, -0.5, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 2
 
   },
   "SassyCat":{
@@ -23,9 +31,13 @@
     "target": "./assets/mind-files/normal-sassy-cat.mind",
     "defaultText": "Stay Sassy!",
     "defaultColor": "#FF1493",
-    "defaultSize": 0.2,
+    "defaultSize": 1,
     "envMap": "./assets/hdr/cape_hill_1k.hdr",
-    "displayImage": "./assets/graphics/normal-sassy-cat.png"
+    "displayImage": "./assets/graphics/normal-sassy-cat.png",
+    "modelPosition": [0, -0.4, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.02
 
   },
   "FlyingHearts":{
@@ -35,6 +47,23 @@
     "defaultColor": "#FF4500",
     "defaultSize": 0.2,
     "envMap": "./assets/hdr/studio_kontrast_04_1k.hdr",
-    "displayImage": "./assets/graphics/Flying_Hearts_Front_Graphic.png"
-}
+    "displayImage": "./assets/graphics/Flying_Hearts_Front_Graphic.png",
+    "modelPosition": [0, -0.5, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
+},
+  "BloomingFlowers":{
+    "model": "./assets/models/Blooming-Flower.glb",
+    "target": "./assets/mind-files/bloomingmind.mind",
+    "defaultText": "You Make My Heart Bloom!",
+    "defaultColor": "#FF69B4",
+    "defaultSize": 0.2,
+    "envMap": "./assets/hdr/cape_hill_1k.hdr",
+    "displayImage": "./assets/graphics/BloomingFlowersV.png",
+    "modelPosition": [0, -0.5, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
+  }
 }

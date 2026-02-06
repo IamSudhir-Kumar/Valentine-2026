@@ -1,10 +1,16 @@
 {
+  "1053": {
+    "imagePath": "/uploads/valentine/channel-1053.png"
+  },
+  "1095": {
+    "imagePath": "/uploads/valentine/channel-1095.png"
+  },
   "1572": {
     "text": "My Heart is Yours",
-    "color": "#FF0090",
-    "size": 0.2,
+    "color": "#ff0090",
+    "size": "0.2",
     "type": "valentine",
-    "imagePath": null
+    "imagePath": "/uploads/valentine/channel-1572.png"
   },
   "1745": {
     "text": "My Heart is Yours",

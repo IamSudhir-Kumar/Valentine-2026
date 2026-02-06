@@ -60,8 +60,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const raccoon = await loadGLTF(preset.model);
-    raccoon.scene.scale.set(0.01, 0.01, 0.01);
-    raccoon.scene.position.set(0, -0.5, 0);
+    raccoon.scene.scale.set(preset.modelScale, preset.modelScale, preset.modelScale);
+    raccoon.scene.position.set(...preset.modelPosition);
+    raccoon.scene.rotation.set(...preset.modelRotation);
 
     raccoon.scene.traverse((o) => {
       if (o.isMesh) {
@@ -125,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           textGroup = new THREE.Group();
           if (invisiblePlane) {
             invisiblePlane.add(textGroup);
-            textGroup.position.set(0, 0, 0.01); // Set initial position relative to invisiblePlane
+            textGroup.position.set(...preset.textPosition); // Set initial position relative to invisiblePlane
           }
         } else {
           // Dispose of old geometries and remove old meshes
@@ -214,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const formData = new FormData();
         formData.append("image", blob, "val_upload.png");
         try {
-          const response = await fetch(`/api/upload/valentine/${cardId}`, { method: "POST", body: formData });
+          const response = await fetch(`/api/upload/${presetName}/${cardId}`, { method: "POST", body: formData });
           if (response.ok) {
             const data = await response.json();
             applyTexture(data.filePath);

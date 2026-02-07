@@ -86,7 +86,7 @@
     "defaultColor": "#FF69B4",
     "defaultSize": 0.2,
     "envMap": "./assets/hdr/cape_hill_1k.hdr",
-    "displayImage": "/assets/graphics/Post_Card_Cherry_Blossom.png",
+    "displayImage": "/assets/graphics/Post-cherry.png",
     "modelPosition": [0, -0.2, 0],
     "modelRotation": [0, 0, 0],
     "textPosition": [0, 0, 0.01],

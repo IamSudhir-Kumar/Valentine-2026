@@ -65,5 +65,57 @@
     "modelRotation": [90, 0, 0],
     "textPosition": [0, 0, 0.01],
     "modelScale": 0.015
+  },
+  "Love_Letter":{
+    "model": "./assets/models/air-baloon.glb",
+    "target": "./assets/mind-files/Love_Letter-airballoon.mind",
+    "defaultText": "You Are My Valentine!",
+    "defaultColor": "#FF69B4",
+    "defaultSize": 0.2,
+    "envMap": "./assets/hdr/cape_hill_1k.hdr",
+    "displayImage": "./assets/graphics/Love_Letter-airballoon.png",
+    "modelPosition": [0, -0.2, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
+  },
+  "Post_Card_Cherry_blossom":{  
+    "model": "./assets/models/cherry.glb",
+    "target": "./assets/mind-files/Post_Card_Cherry_blossom.mind",
+    "defaultText": "Wish You Were Here!",
+    "defaultColor": "#FF69B4",
+    "defaultSize": 0.2,
+    "envMap": "./assets/hdr/cape_hill_1k.hdr",
+    "displayImage": "./assets/graphics/Post_Card_Cherry_Blossom.png",
+    "modelPosition": [0, -0.2, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
+  },
+  "Post_Card_Red_heart":{
+    "model": "./assets/models/sassy-cat.glb",
+    "target": "./assets/mind-files/Post_Card_Red_heart.mind",
+    "defaultText": "You Have My Heart!",
+    "defaultColor": "#FF69B4",
+    "defaultSize": 0.2,
+    "envMap": "./assets/hdr/cape_hill_1k.hdr",
+    "displayImage": "./assets/graphics/Post_Card_Red_Heart.png",
+    "modelPosition": [0, -0.2, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
+  },
+  "Post_Card_V_Stone_heart":{
+    "model": "./assets/models/sassy-cat.glb",
+    "target": "./assets/mind-files/Post_Card_V_Stone_heart.mind",
+    "defaultText": "You Are My Rock!",
+    "defaultColor": "#FF69B4",
+    "defaultSize": 0.2,
+    "envMap": "./assets/hdr/cape_hill_1k.hdr",
+    "displayImage": "./assets/graphics/Post_Card_V_Stone_Heart.png",
+    "modelPosition": [0, -0.2, 0],
+    "modelRotation": [0, 0, 0],
+    "textPosition": [0, 0, 0.01],
+    "modelScale": 0.01
   }
 }

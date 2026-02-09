@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     // Special case for 'valentine' where key is 'valentine' and URL part is 'valentine'
     if (key.toLowerCase() === presetNameFromUrl.toLowerCase() && key === 'valentine') {
-        matchedPresetKey = key;
-        break;
+      matchedPresetKey = key;
+      break;
     }
   }
 
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       side: THREE.DoubleSide
     });
     invisiblePlane = new THREE.Mesh(geometry, planeMaterial);
-    invisiblePlane.position.set(0, -0.9, 0.25);
+    invisiblePlane.position.set(0, -0.7, 0.25);
     anchor.group.add(invisiblePlane);
 
     mixer = new THREE.AnimationMixer(raccoon.scene);
@@ -120,62 +120,63 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const updateTextGeometry = () => {
         const text = textInput.value;
-        const sizePercentage = Math.min(Math.max(parseFloat(textSizeInput.value), 0.1), 1.0);
-
-        if (!textGroup) { // Initialize textGroup if it doesn't exist yet
+        if (!text.trim()) {
+          if (textGroup) textGroup.scale.set(0, 0, 0);
+          return;
+        }
+        if (!textGroup) {
           textGroup = new THREE.Group();
           if (invisiblePlane) {
             invisiblePlane.add(textGroup);
-            textGroup.position.set(...preset.textPosition); // Set initial position relative to invisiblePlane
+            textGroup.position.set(...preset.textPosition);
           }
         } else {
-          // Dispose of old geometries and remove old meshes
           textGroup.children.forEach((child) => {
-            if (child.isMesh) child.geometry.dispose();
+            if (child.isMesh) {
+              child.geometry.dispose();
+            }
           });
-          textGroup.clear(); // Remove all children from the existing textGroup
+          textGroup.clear();
         }
-
         const lines = text.split("\n");
-        const lineHeight = 1.2;
-        
-        // Calculate total height of text block for centering
-        const totalTextHeight = (lines.length > 0 ? lines.length - 1 : 0) * lineHeight;
+        let maxLineWidth = 0;
 
         lines.forEach((line, index) => {
           if (line.trim() === "") return;
+
+          // 1. Create geometry
           const textGeo = new THREE.TextGeometry(line, { font: font, size: 1.0, height: 0.1 });
-          textGeo.center(); // This centers the text around its local origin
+          // 2. Force compute bounding box IMMEDIATELY
+          textGeo.computeBoundingBox();
+          // 3. Measure width directly from the geometry before it's even in a mesh
+          const lineWidth = textGeo.boundingBox.max.x - textGeo.boundingBox.min.x;
+          if (lineWidth > maxLineWidth) maxLineWidth = lineWidth;
+          textGeo.center();
           const lineMesh = new THREE.Mesh(textGeo, textMaterial);
-          
-          // Position relative to the center of the total text block
-          lineMesh.position.y = (totalTextHeight / 2) - (index * lineHeight);
-          
+          lineMesh.position.y = ((lines.length - 1) * 1.2) / 2 - index * 1.2;
           textGroup.add(lineMesh);
         });
 
-        // After adding all lines, calculate bounding box and scale the entire group
-        if (textGroup.children.length > 0) { // Only calculate if there are lines
-          const textBBox = new THREE.Box3().setFromObject(textGroup);
-          const textWidth = textBBox.max.x - textBBox.min.x;
-          // Ensure textWidth is not zero to prevent division by zero
-          const finalScale = textWidth > 0 ? (2.2 / textWidth) * sizePercentage : sizePercentage; 
+        // 4. Use the maxLineWidth we measured manually
+        if (maxLineWidth > 0) {
+          const baseScale = 1.5 / maxLineWidth;
+          textGroup.userData.baseScale = baseScale;
+          const currentSize = parseFloat(textSizeInput.value) || 0.5;
+          const finalScale = baseScale * currentSize;
           textGroup.scale.set(finalScale, finalScale, finalScale);
+          textGroup.position.set(0, 0, 0);
         } else {
-            textGroup.scale.set(0,0,0); // Hide if no text
+          textGroup.scale.set(0, 0, 0);
         }
-        
-        textGroup.updateMatrixWorld(true); // Explicitly update world matrix
-
-        // Explicitly mark materials as needing update
-        textGroup.traverse( ( object ) => {
-            if ( object.isMesh ) {
-                if (Array.isArray(object.material)) {
-                    object.material.forEach(m => m.needsUpdate = true);
-                } else if (object.material) {
-                    object.material.needsUpdate = true;
-                }
+        textGroup.updateMatrixWorld(true);
+        textGroup.traverse((object) => {
+          if (object.isMesh) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach(m => m.needsUpdate = true);
+            } else if (object.material) {
+              object.material.needsUpdate = true;
             }
+          }
         });
       };
 
@@ -193,19 +194,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         textureLoader.load(cacheBusterUrl, (texture) => {
           if (imageTexturePlane) {
             texture.flipY = false;
-            texture.encoding = THREE.sRGBColorSpace; // Use SRGBColorSpace consistently
+            texture.encoding = THREE.sRGBEncoding; 
 
             if (imageTexturePlane.material && (imageTexturePlane.material.isMeshStandardMaterial || imageTexturePlane.material.isMeshPhysicalMaterial)) {
-                // If it's a PBR material, just update the map and flag for update
-                imageTexturePlane.material.map = texture;
-                imageTexturePlane.material.needsUpdate = true;
+              // If it's a PBR material, just update the map and flag for update
+              imageTexturePlane.material.map = texture;
+              imageTexturePlane.material.needsUpdate = true;
             } else {
-                // Fallback to MeshBasicMaterial if it's not a PBR material or if we want basic
-                imageTexturePlane.material = new THREE.MeshBasicMaterial({
-                  map: texture,
-                  transparent: true,
-                  toneMapped: false,
-                });
+              // Fallback to MeshBasicMaterial if it's not a PBR material or if we want basic
+              imageTexturePlane.material = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true,
+                toneMapped: false,
+              });
             }
           }
         });
@@ -279,19 +280,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (err) { console.error("Load failed:", err); }
       };
 
-      textSizeInput.addEventListener('input', (e) => updateSliderTrack(e.target));
+      textSizeInput.addEventListener('input', (e) => {
+        updateSliderTrack(e.target);
+        if (textGroup && textGroup.userData.baseScale) {
+          const sizePercentage = parseFloat(e.target.value);
+          const newScale = textGroup.userData.baseScale * sizePercentage;
+          textGroup.scale.set(newScale, newScale, newScale);
+        }
+      });
       updateSliderTrack(textSizeInput);
+      updateTextGeometry()
 
       // Event listener for the new "Apply Text" button
       applyTextBtn.addEventListener('click', () => {
         updateTextGeometry();
-        saveCardData(textInput.value, colorPicker.value, textSizeInput.value); // Save all text-related data
+        saveCardData(textInput.value, colorPicker.value, textSizeInput.value);
         posthog.capture('Card Data Updated', {
           cardId: cardId,
           update_type: 'explicit_text_update',
           text: textInput.value,
           size: textSizeInput.value,
-          color: colorPicker.value // Include color in explicit update
+          color: colorPicker.value
         });
       });
 

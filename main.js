@@ -1,6 +1,14 @@
 import { loadGLTF } from "./libs/loader.js";
 import { RGBELoader } from "./libs/three.js-r132/examples/jsm/loaders/RGBELoader.js";
 
+function debounce(func, timeout = 500) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
 const THREE = window.MINDAR.IMAGE.THREE;
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -25,8 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cardId = pathParts[1] || 'default_card';
   const preset = presets[presetName]; // Use the matched key
 
-  // POSTHOG
   posthog.identify(cardId);
+  posthog.capture('card_visited', {
+    preset: presetName,
+    card_id: cardId
+  });
 
   const arTargetImage = document.getElementById('ar-target-image');
   if (arTargetImage && preset.displayImage) {
@@ -112,6 +123,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         envMap: hdrTexture,
       });
 
+      const captureColorChange = debounce((colorValue) => {
+        posthog.capture('Card Data Updated', {
+          cardId: cardId,
+          preset: presetName,
+          type: 'color-change', // Differentiated name
+          update_type: 'color_change',
+          color: colorValue
+        });
+      }, 1000);
+
       textInput.addEventListener('input', function () {
         const words = this.value.trim().split(/\s+/);
         if (words.length > 30) {
@@ -196,7 +217,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         textureLoader.load(cacheBusterUrl, (texture) => {
           if (imageTexturePlane) {
             texture.flipY = false;
-            texture.encoding = THREE.sRGBEncoding; 
+            texture.encoding = THREE.sRGBEncoding;
 
             if (imageTexturePlane.material && (imageTexturePlane.material.isMeshStandardMaterial || imageTexturePlane.material.isMeshPhysicalMaterial)) {
               // If it's a PBR material, just update the map and flag for update
@@ -224,7 +245,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             applyTexture(data.filePath);
             saveCardData(textInput.value, colorPicker.value, textSizeInput.value, data.filePath);
 
-            posthog.capture('Image Uploaded', { cardId: cardId, filePath: data.filePath });
+            posthog.capture('Image Uploaded', {
+              cardId: cardId,
+              preset: presetName, // New
+              type: 'image',      // New
+              filePath: data.filePath
+            });
 
             imageBtn.textContent = "Updated";
             imageBtn.style.background = "#4CAF50";
@@ -297,12 +323,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       applyTextBtn.addEventListener('click', () => {
         updateTextGeometry();
         saveCardData(textInput.value, colorPicker.value, textSizeInput.value);
+
         posthog.capture('Card Data Updated', {
           cardId: cardId,
+          preset: presetName,
+          type: 'text-change', // Differentiated name
           update_type: 'explicit_text_update',
-          text: textInput.value,
-          size: textSizeInput.value,
-          color: colorPicker.value
+          text: textInput.value
         });
       });
 
@@ -311,13 +338,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const colorIndicator = document.getElementById('color-indicator');
         if (colorIndicator) colorIndicator.style.backgroundColor = colorPicker.value;
         saveCardData(textInput.value, colorPicker.value, textSizeInput.value);
-        posthog.capture('Card Data Updated', {
-          cardId: cardId,
-          update_type: 'color_change',
-          text: textInput.value,
-          size: textSizeInput.value,
-          color: colorPicker.value
-        });
+
+        captureColorChange(colorPicker.value);
       });
 
       const imageUpload = document.getElementById("image-upload");

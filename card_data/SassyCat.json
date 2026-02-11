@@ -1,8 +1,8 @@
 {
   "1053": {
     "text": "Stay Sassy!",
-    "color": "#FF1493",
-    "size": 0.2,
+    "color": "#ffffff",
+    "size": "0.5",
     "type": "SassyCat",
     "imagePath": null
   },

@@ -207,7 +207,7 @@ app.post('/api/card-data/:presetName/:cardId', (req, res) => {
             text,
             color,
             size,
-            type: 'valentine'
+            type: presetName
         };
 
         fs.writeFileSync(cardDataFile, JSON.stringify(data, null, 2));

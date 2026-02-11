@@ -9,6 +9,28 @@ function debounce(func, timeout = 500) {
   };
 }
 
+function wrapText(text, font, fontSize, maxWidth) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let currentLine = words[0];
+  for (let i = 1; i < words.length; i++) {
+    const word = words[i];
+    const testLine = currentLine + " " + word;
+    const shapes = font.generateShapes(testLine, fontSize);
+    const geometry = new THREE.ShapeGeometry(shapes);
+    geometry.computeBoundingBox();
+    const width = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+    if (width > maxWidth) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+  lines.push(currentLine);
+  return lines;
+}
+
 const THREE = window.MINDAR.IMAGE.THREE;
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -146,61 +168,54 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (textGroup) textGroup.scale.set(0, 0, 0);
           return;
         }
+
+        const FONT_SIZE = 0.2;
+        const MAX_WIDTH = 2.8;
+        const LINE_HEIGHT = 0.2;
+
         if (!textGroup) {
           textGroup = new THREE.Group();
-          if (invisiblePlane) {
-            invisiblePlane.add(textGroup);
-            textGroup.position.set(...preset.textPosition);
-          }
+          if (invisiblePlane) invisiblePlane.add(textGroup);
         } else {
-          textGroup.children.forEach((child) => {
-            if (child.isMesh) {
-              child.geometry.dispose();
-            }
-          });
+          textGroup.children.forEach((child) => { if (child.isMesh) child.geometry.dispose(); });
           textGroup.clear();
         }
-        const lines = text.split("\n");
-        let maxLineWidth = 0;
 
-        lines.forEach((line, index) => {
+        const paragraphs = text.split("\n");
+        let allLines = [];
+        paragraphs.forEach(p => {
+          if (p.trim() === "") allLines.push("");
+          else allLines = allLines.concat(wrapText(p, font, FONT_SIZE, MAX_WIDTH));
+        });
+
+        allLines.forEach((line, index) => {
           if (line.trim() === "") return;
+          const textGeo = new THREE.TextGeometry(line, { font: font, size: FONT_SIZE, height: 0.01 });
 
-          // 1. Create geometry
-          const textGeo = new THREE.TextGeometry(line, { font: font, size: 1.0, height: 0.1 });
-          // 2. Force compute bounding box IMMEDIATELY
+          // Horizontal center, but anchor Y to 0 so Line 1 stays put
           textGeo.computeBoundingBox();
-          // 3. Measure width directly from the geometry before it's even in a mesh
-          const lineWidth = textGeo.boundingBox.max.x - textGeo.boundingBox.min.x;
-          if (lineWidth > maxLineWidth) maxLineWidth = lineWidth;
-          textGeo.center();
+          const xMid = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
+          textGeo.translate(xMid, 0, 0);
+
           const lineMesh = new THREE.Mesh(textGeo, textMaterial);
-          lineMesh.position.y = ((lines.length - 1) * 1.2) / 2 - index * 1.2;
+          lineMesh.position.y = -index * LINE_HEIGHT;
           textGroup.add(lineMesh);
         });
 
-        // 4. Use the maxLineWidth we measured manually
-        if (maxLineWidth > 0) {
-          const baseScale = 1.5 / maxLineWidth;
-          textGroup.userData.baseScale = baseScale;
-          const currentSize = parseFloat(textSizeInput.value) || 0.5;
-          const finalScale = baseScale * currentSize;
-          textGroup.scale.set(finalScale, finalScale, finalScale);
-          textGroup.position.set(...preset.textPosition);
-        } else {
-          textGroup.scale.set(0, 0, 0);
-        }
-        textGroup.updateMatrixWorld(true);
+        const sliderScale = (parseFloat(textSizeInput.value) || 0.5) / 2;
+        textGroup.scale.set(sliderScale, sliderScale, sliderScale);
+        textGroup.position.set(...preset.textPosition);
 
         textGroup.traverse((object) => {
           if (object.isMesh) {
-            if (Array.isArray(object.material)) {
-              object.material.forEach(m => m.needsUpdate = true);
-            } else if (object.material) {
+            // Ensure the material knows it has an environment map
+            if (object.material) {
+              object.material.envMap = hdrTexture;
               object.material.needsUpdate = true;
             }
           }
         });
+        textGroup.updateMatrixWorld(true);
       };
 
       const applyTexture = (textureUrl) => {
@@ -304,16 +319,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
               imageBtn.textContent = "Choose Image";
             }
-          }
+          }s
         } catch (err) { console.error("Load failed:", err); }
       };
 
       textSizeInput.addEventListener('input', (e) => {
         updateSliderTrack(e.target);
-        if (textGroup && textGroup.userData.baseScale) {
-          const sizePercentage = parseFloat(e.target.value);
-          const newScale = textGroup.userData.baseScale * sizePercentage;
-          textGroup.scale.set(newScale, newScale, newScale);
+        if (textGroup) {
+          const val = (parseFloat(e.target.value) || 0.5) /2 ;
+          textGroup.scale.set(val, val, val);
         }
       });
       updateSliderTrack(textSizeInput);

@@ -10,8 +10,8 @@
     "modelPosition": [0, -0.2, 0],
     "modelRotation": [0, 0, 0],
     "textPosition": [0, 0, 0.01],
-    "planePosition": [0, -0.45, -0.3],
-    "modelScale": 0.005
+    "planePosition": [0, -0.5, -0.3],
+    "modelScale": 0.007
   },
   "CherryBlossomCat":{
     "model": "./assets/models/cherry.glb",
@@ -73,18 +73,18 @@
 
   },
   "Love_Letter":{
-    "model": "./assets/models/air-baloon-pink.glb",
+    "model": "./assets/models/Air_Balloons_v2_REVISED.glb",
     "target": "./assets/mind-files/Love_Letter-airballoon.mind",
     "defaultText": "You Are My Valentine!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.5,
     "envMap": "./assets/hdr/cape_hill_1k.hdr",
     "displayImage": "/assets/graphics/Love_Letter-airballoon.png",
-    "modelPosition": [0, -0.2, 0],
+    "modelPosition": [0, 0, 0],
     "modelRotation": [0, 0, 0],
     "textPosition": [0, 0, 0],
-    "planePosition": [0, -0.6, -0.2],
-    "modelScale": 0.01
+    "planePosition": [0, -0.3, -0.2],
+    "modelScale": 0.002
   },
   "Post_Card_Cherry_blossom":{
     "model": "./assets/models/BloomingFlowers_3.glb",

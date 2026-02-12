@@ -96,6 +96,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     raccoon.scene.scale.set(preset.modelScale, preset.modelScale, preset.modelScale);
     raccoon.scene.position.set(...preset.modelPosition);
     raccoon.scene.rotation.set(...preset.modelRotation);
+    const audio = document.getElementById('background-music');
+    const startARButton = document.getElementById('start-ar-button');
+
+    startARButton.addEventListener("click", () => {
+      if (audio) {
+        audio.play().then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+        }).catch(err => console.warn("Audio unlock failed:", err));
+      }
+    });
 
     raccoon.scene.traverse((o) => {
       if (o.isMesh) {
@@ -112,6 +123,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const anchor = mindarThree.addAnchor(0);
     anchor.group.add(raccoon.scene);
+
+    anchor.onTargetFound = () => {
+      if (audio) audio.play();
+    };
+
+    anchor.onTargetLost = () => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
 
     // Invisible Plane 
     const geometry = new THREE.PlaneGeometry(2.5, 1.2);
@@ -319,14 +341,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
               imageBtn.textContent = "Choose Image";
             }
-          }s
+          } s
         } catch (err) { console.error("Load failed:", err); }
       };
 
       textSizeInput.addEventListener('input', (e) => {
         updateSliderTrack(e.target);
         if (textGroup) {
-          const val = (parseFloat(e.target.value) || 0.5) /2 ;
+          const val = (parseFloat(e.target.value) || 0.5) / 2;
           textGroup.scale.set(val, val, val);
         }
       });

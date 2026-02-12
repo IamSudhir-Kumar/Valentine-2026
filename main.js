@@ -61,6 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     card_id: cardId
   });
 
+  const audio = document.getElementById('background-music');
+  if (audio && preset.audio) {
+    audio.src = preset.audio;
+    audio.load(); // Prepare the specific track for this preset
+  }
+
   const arTargetImage = document.getElementById('ar-target-image');
   if (arTargetImage && preset.displayImage) {
     arTargetImage.src = preset.displayImage;
@@ -98,15 +104,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     raccoon.scene.rotation.set(...preset.modelRotation);
     const audio = document.getElementById('background-music');
     const startARButton = document.getElementById('start-ar-button');
-
-    startARButton.addEventListener("click", () => {
-      if (audio) {
-        audio.play().then(() => {
-          audio.pause();
-          audio.currentTime = 0;
-        }).catch(err => console.warn("Audio unlock failed:", err));
-      }
-    });
 
     raccoon.scene.traverse((o) => {
       if (o.isMesh) {
@@ -429,6 +426,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   startARButton.addEventListener('click', async () => {
     try {
+      const audio = document.getElementById('background-music');
+      if (audio) {
+        audio.play().then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+        }).catch(err => console.warn("Audio unlock failed:", err));
+      }
+
       await mindarThree.start();
       posthog.capture('AR Experience Started', { cardId: cardId });
 

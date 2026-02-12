@@ -2,6 +2,7 @@
   "valentine": {
     "model": "./assets/models/air-baloon.glb",
     "target": "./assets/mind-files/air-baloon.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "My Heart is Yours",
     "defaultColor": "#FF0090",
     "defaultSize": 0.5,
@@ -16,6 +17,7 @@
   "CherryBlossomCat":{
     "model": "./assets/models/cherry.glb",
     "target": "./assets/mind-files/cherry-blossom.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "You are Purr-fect!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.5,
@@ -31,6 +33,7 @@
   "SassyCat":{
     "model": "./assets/models/sassy-cat.glb",
     "target": "./assets/mind-files/normal-sassy-cat.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "Stay Sassy!",
     "defaultColor": "#FF1493",
     "defaultSize": 0.5,
@@ -46,6 +49,7 @@
   "FlyingHearts":{
     "model": "./assets/models/Flying_hearts_Rename.glb",
     "target": "./assets/mind-files/flying-hearts.mind",
+    "audio": "/assets/music/Purple_Heart_BGMuisc_Cut.MP3",
     "defaultText": "Love is in the Air!",
     "defaultColor": "#FF4500",
     "defaultSize": 0.5,
@@ -60,6 +64,7 @@
   "BloomingFlowers":{
     "model": "./assets/models/BloomingFlowers_3.glb",
     "target": "./assets/mind-files/BloomingFlowers.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "You Make My Heart Bloom!",
     "defaultColor": "#FF69B4",
     "defaultSize": 1.3,
@@ -75,6 +80,7 @@
   "Love_Letter":{
     "model": "./assets/models/Air_Balloons_v2_REVISED.glb",
     "target": "./assets/mind-files/Love_Letter-airballoon.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "You Are My Valentine!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.5,
@@ -89,6 +95,7 @@
   "Post_Card_Cherry_blossom":{
     "model": "./assets/models/BloomingFlowers_3.glb",
     "target": "./assets/mind-files/Post_Card_Cherry_blossom.mind",
+    "audio": "/assets/music/Music 1.MP3",
     "defaultText": "Wish You Were Here!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.5,
@@ -103,6 +110,7 @@
   "Post_Card_Red_heart":{
     "model": "./assets/models/newRedHeart.glb",
     "target": "./assets/mind-files/Post_Card_Red_heart.mind",
+    "audio": "/assets/music/Red_Heart_BGMusic_Cut.MP3",
     "defaultText": "You Have My Heart!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.5,
@@ -117,6 +125,7 @@
   "Post_Card_V_Stone_heart":{
     "model": "./assets/models/C_Red.glb",
     "target": "./assets/mind-files/Post_Card_V_Stone_heart.mind",
+    "audio": "/assets/music/Red_Stone_Heart_BGMusic_Cut.MP3",
     "defaultText": "You Are My Rock!",
     "defaultColor": "#FF69B4",
     "defaultSize": 0.89,
